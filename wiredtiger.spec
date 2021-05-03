@@ -41,6 +41,11 @@ Development files for the WiredTiger NoSQL data management platform
 
 %prep
 %autosetup -p1
+for arch in arm64 ppc64; do
+	cp -a build_cmake/configs/x86 build_cmake/configs/$arch
+	sed -i -e "s,x86,${arch},g" build_cmake/configs/$arch/linux/config.cmake
+done
+
 %cmake \
 	-DENABLE_STRICT:BOOL=OFF \
 	-DENABLE_LZ4:BOOL=ON \
