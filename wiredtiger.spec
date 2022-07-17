@@ -1,13 +1,11 @@
 %define major %(echo %{version}|cut -d. -f1)
-%define libname %mklibname wiredtiger %{major}
+%define libname %mklibname wiredtiger
 %define devname %mklibname -d wiredtiger
 
 Name: wiredtiger
-Version: 10.0.0
+Version: 11.0.0
 Release: 1
 Source0: https://github.com/wiredtiger/wiredtiger/archive/refs/tags/%{version}.tar.gz
-# Add cmake support (from develop branch)
-Patch0: https://github.com/wiredtiger/wiredtiger/commit/31aeb15fc5cde6fa0722d009b46af91191ba70d8.patch
 Summary: NoSQL platform for data management
 URL: https://github.com/wiredtiger/wiredtiger
 License: GPLv2/GPLv3
@@ -18,6 +16,9 @@ BuildRequires: pkgconfig(libzstd)
 BuildRequires: pkgconfig(liblz4)
 BuildRequires: pkgconfig(snappy)
 BuildRequires: pkgconfig(python3)
+BuildRequires: pkgconfig(libsodium)
+BuildRequires: swig
+Requires: %{libname} = %{EVRD}
 
 %description
 WiredTiger is a NoSQL, Open Source extensible platform for data management. It
@@ -41,11 +42,6 @@ Development files for the WiredTiger NoSQL data management platform
 
 %prep
 %autosetup -p1
-for arch in arm64 ppc64; do
-	cp -a build_cmake/configs/x86 build_cmake/configs/$arch
-	sed -i -e "s,x86,${arch},g" build_cmake/configs/$arch/linux/config.cmake
-done
-
 %cmake \
 	-DENABLE_STRICT:BOOL=OFF \
 	-DENABLE_LZ4:BOOL=ON \
@@ -71,6 +67,9 @@ done
 
 %install
 %ninja_install -C build
+
+%files
+%{_bindir}/wt
 
 %files -n %{libname}
 %{_libdir}/libwiredtiger.so.%{major}*
