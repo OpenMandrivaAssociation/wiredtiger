@@ -53,7 +53,7 @@ Development files for the WiredTiger NoSQL data management platform
 	-DWT_ARCH=x86 \
 %else
 %ifarch %{aarch64}
-	-DWT_ARCH=arm64 \
+	-DWT_ARCH=aarch64 \
 %else
 %ifarch %{ppc}
 	-DWT_ARCH=ppc64 \
