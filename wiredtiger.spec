@@ -4,7 +4,7 @@
 
 Name: wiredtiger
 Version: 11.0.0
-Release: 1
+Release: 2
 Source0: https://github.com/wiredtiger/wiredtiger/archive/refs/tags/%{version}.tar.gz
 Summary: NoSQL platform for data management
 URL: https://github.com/wiredtiger/wiredtiger
@@ -57,16 +57,25 @@ Development files for the WiredTiger NoSQL data management platform
 %else
 %ifarch %{ppc}
 	-DWT_ARCH=ppc64 \
+%else
+%ifarch %{riscv}
+	-DWT_ARCH=riscv64 \
 %endif
 %endif
 %endif
-	-G Ninja \
+%endif
+	-G Ninja
 
 %build
 %ninja_build -C build
 
 %install
 %ninja_install -C build
+
+# -L/standard-directories is EVIL
+sed -i 's,-L${libdir} ,,g' %{buildroot}%{_libdir}/pkgconfig/*.pc
+# And so is -I/usr/include
+sed -i -e '/^Cflags:/d' %{buildroot}%{_libdir}/pkgconfig/*.pc
 
 %files
 %{_bindir}/wt
@@ -78,9 +87,9 @@ Development files for the WiredTiger NoSQL data management platform
 %{_libdir}/libwiredtiger_snappy.so
 %{_libdir}/libwiredtiger_zlib.so
 %{_libdir}/libwiredtiger_zstd.so
-%{_libdir}/pkgconfig/wiredtiger.pc
 
 %files -n %{devname}
 %{_includedir}/wiredtiger.h
 %{_includedir}/wiredtiger_ext.h
 %{_libdir}/libwiredtiger.so
+%{_libdir}/pkgconfig/wiredtiger.pc
