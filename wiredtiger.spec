@@ -3,8 +3,8 @@
 %define devname %mklibname -d wiredtiger
 
 Name: wiredtiger
-Version: 11.0.0
-Release: 3
+Version: 11.3.1
+Release: 1
 Source0: https://github.com/wiredtiger/wiredtiger/archive/refs/tags/%{version}.tar.gz
 Summary: NoSQL platform for data management
 URL: https://github.com/wiredtiger/wiredtiger
